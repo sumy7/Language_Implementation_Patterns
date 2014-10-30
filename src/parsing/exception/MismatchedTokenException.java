@@ -1,4 +1,4 @@
-package parsing.backtrack;
+package parsing.exception;
 
 public class MismatchedTokenException extends RecognitionException {
 

@@ -1,4 +1,7 @@
-package parsing.backtrack;
+package parsing.memoize;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import parsing.exception.NoViableAltException;
 import parsing.exception.RecognitionException;
@@ -7,8 +10,11 @@ import parsing.lexer.Token;
 
 public class BacktrackParser extends Parser {
 
+	Map<Integer, Integer> list_memo;
+
 	public BacktrackParser(Lexer input) {
 		super(input);
+		list_memo = new HashMap<Integer, Integer>();
 	}
 
 	/**
@@ -29,6 +35,7 @@ public class BacktrackParser extends Parser {
 	}
 
 	public boolean speculate_stat_alt1() {
+		System.out.println("attempt alternative 1");
 		boolean success = true;
 		mark(); // 标记当前位置
 		try {
@@ -42,6 +49,7 @@ public class BacktrackParser extends Parser {
 	}
 
 	public boolean speculate_stat_alt2() {
+		System.out.println("attempt alternative 2");
 		boolean success = true;
 		mark(); // 标记当前位置
 		try {
@@ -67,6 +75,29 @@ public class BacktrackParser extends Parser {
 	 * list : '[' elements ']' ;
 	 */
 	public void list() throws RecognitionException {
+		boolean failed = false;
+		int startTokenIndex = index(); // 获取当前词法单元的位置
+		if (isSpeculating() && alreadyParsedRule(list_memo))
+			return;
+		// 之前没有在tokenIndex处解析过
+		try {
+			_list();
+		} catch (RecognitionException re) {
+			failed = true;
+			throw re;
+		} finally {
+			if (isSpeculating()) {
+				// 回溯记录解析结果
+				memoize(list_memo, startTokenIndex, failed);
+			}
+		}
+	}
+
+	/**
+	 * list : '[' elements ']' ;
+	 */
+	public void _list() throws RecognitionException {
+		System.out.println("parsing list rule at token index: " + index());
 		match(Token.LBRACK);
 		elements();
 		match(Token.RBRACK);
@@ -97,5 +128,10 @@ public class BacktrackParser extends Parser {
 			list();
 		else
 			throw new Error("expecting name or list; found " + LT(1));
+	}
+
+	@Override
+	public void clearMemo() {
+		list_memo.clear();
 	}
 }

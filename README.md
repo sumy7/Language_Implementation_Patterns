@@ -43,3 +43,17 @@ Test程序：匹配成功无显示，匹配失败抛出异常。
     element : NAME '=' NAME | NAME | list ; 
     
 Test程序：匹配成功无显示，匹配失败抛出异常。  
+
+## parsing.memoize
+记忆化的回溯匹配。在匹配过程中记录成功或失败的位置，当下一次在相同位置用相同文法进行匹配时直接返回结果。  
+  
+示例文法：
+
+    stat : list EOF
+         | list '=' list
+         ;
+    list : '[' elements ']' ; 
+    elements : element (',' element)* ;  
+    element : NAME '=' NAME | NAME | list ; 
+
+Test程序：显示匹配的大致过程，匹配失败抛出异常。
