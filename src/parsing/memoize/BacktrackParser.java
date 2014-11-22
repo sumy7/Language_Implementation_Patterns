@@ -10,128 +10,128 @@ import parsing.lexer.Token;
 
 public class BacktrackParser extends Parser {
 
-	Map<Integer, Integer> list_memo;
+    Map<Integer, Integer> list_memo;
 
-	public BacktrackParser(Lexer input) {
-		super(input);
-		list_memo = new HashMap<Integer, Integer>();
-	}
+    public BacktrackParser(Lexer input) {
+        super(input);
+        list_memo = new HashMap<Integer, Integer>();
+    }
 
-	/**
-	 * stat : list EOF | assign EOF ;
-	 */
-	public void stat() throws RecognitionException {
-		// ³¢ÊÔ½âÎöÑ¡Ïî 1£º list EOF
-		if (speculate_stat_alt1()) {
-			list();
-			match(Token.EOF_TYPE);
-			// ³¢ÊÔ½âÎöÑ¡Ïî2£º assign EOF
-		} else if (speculate_stat_alt2()) {
-			assign();
-			match(Token.EOF_TYPE);
-			// Á½¸ö¶¼²»Æ¥Åä£¬³ö´í
-		} else
-			throw new NoViableAltException("expection stat found " + LT(1));
-	}
+    /**
+     * stat : list EOF | assign EOF ;
+     */
+    public void stat() throws RecognitionException {
+        // å°è¯•è§£æé€‰é¡¹ 1ï¼š list EOF
+        if (speculate_stat_alt1()) {
+            list();
+            match(Token.EOF_TYPE);
+            // å°è¯•è§£æé€‰é¡¹2ï¼š assign EOF
+        } else if (speculate_stat_alt2()) {
+            assign();
+            match(Token.EOF_TYPE);
+            // ä¸¤ä¸ªéƒ½ä¸åŒ¹é…ï¼Œå‡ºé”™
+        } else
+            throw new NoViableAltException("expection stat found " + LT(1));
+    }
 
-	public boolean speculate_stat_alt1() {
-		System.out.println("attempt alternative 1");
-		boolean success = true;
-		mark(); // ±ê¼Çµ±Ç°Î»ÖÃ
-		try {
-			list();
-			match(Token.EOF_TYPE);
-		} catch (RecognitionException e) {
-			success = false;
-		}
-		release(); // »ØËİ
-		return success;
-	}
+    public boolean speculate_stat_alt1() {
+        System.out.println("attempt alternative 1");
+        boolean success = true;
+        mark(); // æ ‡è®°å½“å‰ä½ç½®
+        try {
+            list();
+            match(Token.EOF_TYPE);
+        } catch (RecognitionException e) {
+            success = false;
+        }
+        release(); // å›æº¯
+        return success;
+    }
 
-	public boolean speculate_stat_alt2() {
-		System.out.println("attempt alternative 2");
-		boolean success = true;
-		mark(); // ±ê¼Çµ±Ç°Î»ÖÃ
-		try {
-			assign();
-			match(Token.EOF_TYPE);
-		} catch (RecognitionException e) {
-			success = false;
-		}
-		release(); // »ØËİ
-		return success;
-	}
+    public boolean speculate_stat_alt2() {
+        System.out.println("attempt alternative 2");
+        boolean success = true;
+        mark(); // æ ‡è®°å½“å‰ä½ç½®
+        try {
+            assign();
+            match(Token.EOF_TYPE);
+        } catch (RecognitionException e) {
+            success = false;
+        }
+        release(); // å›æº¯
+        return success;
+    }
 
-	/**
-	 * assign : list '=' list ;
-	 */
-	public void assign() throws RecognitionException {
-		list();
-		match(Token.EQUALS);
-		list();
-	}
+    /**
+     * assign : list '=' list ;
+     */
+    public void assign() throws RecognitionException {
+        list();
+        match(Token.EQUALS);
+        list();
+    }
 
-	/**
-	 * list : '[' elements ']' ;
-	 */
-	public void list() throws RecognitionException {
-		boolean failed = false;
-		int startTokenIndex = index(); // »ñÈ¡µ±Ç°´Ê·¨µ¥ÔªµÄÎ»ÖÃ
-		if (isSpeculating() && alreadyParsedRule(list_memo))
-			return;
-		// Ö®Ç°Ã»ÓĞÔÚtokenIndex´¦½âÎö¹ı
-		try {
-			_list();
-		} catch (RecognitionException re) {
-			failed = true;
-			throw re;
-		} finally {
-			if (isSpeculating()) {
-				// »ØËİ¼ÇÂ¼½âÎö½á¹û
-				memoize(list_memo, startTokenIndex, failed);
-			}
-		}
-	}
+    /**
+     * list : '[' elements ']' ;
+     */
+    public void list() throws RecognitionException {
+        boolean failed = false;
+        int startTokenIndex = index(); // è·å–å½“å‰è¯æ³•å•å…ƒçš„ä½ç½®
+        if (isSpeculating() && alreadyParsedRule(list_memo))
+            return;
+        // ä¹‹å‰æ²¡æœ‰åœ¨tokenIndexå¤„è§£æè¿‡
+        try {
+            _list();
+        } catch (RecognitionException re) {
+            failed = true;
+            throw re;
+        } finally {
+            if (isSpeculating()) {
+                // å›æº¯è®°å½•è§£æç»“æœ
+                memoize(list_memo, startTokenIndex, failed);
+            }
+        }
+    }
 
-	/**
-	 * list : '[' elements ']' ;
-	 */
-	public void _list() throws RecognitionException {
-		System.out.println("parsing list rule at token index: " + index());
-		match(Token.LBRACK);
-		elements();
-		match(Token.RBRACK);
-	}
+    /**
+     * list : '[' elements ']' ;
+     */
+    public void _list() throws RecognitionException {
+        System.out.println("parsing list rule at token index: " + index());
+        match(Token.LBRACK);
+        elements();
+        match(Token.RBRACK);
+    }
 
-	/**
-	 * elements : element (',' element)* ;
-	 */
-	void elements() throws RecognitionException {
-		element();
-		while (LA(1) == Token.COMMA) {
-			match(Token.COMMA);
-			element();
-		}
-	}
+    /**
+     * elements : element (',' element)* ;
+     */
+    void elements() throws RecognitionException {
+        element();
+        while (LA(1) == Token.COMMA) {
+            match(Token.COMMA);
+            element();
+        }
+    }
 
-	/**
-	 * element : NAME '=' NAME | NAME | list ;
-	 */
-	void element() throws RecognitionException {
-		if (LA(1) == Token.NAME && LA(2) == Token.EQUALS) {
-			match(Token.NAME);
-			match(Token.EQUALS);
-			match(Token.NAME);
-		} else if (LA(1) == Token.NAME)
-			match(Token.NAME);
-		else if (LA(1) == Token.LBRACK)
-			list();
-		else
-			throw new Error("expecting name or list; found " + LT(1));
-	}
+    /**
+     * element : NAME '=' NAME | NAME | list ;
+     */
+    void element() throws RecognitionException {
+        if (LA(1) == Token.NAME && LA(2) == Token.EQUALS) {
+            match(Token.NAME);
+            match(Token.EQUALS);
+            match(Token.NAME);
+        } else if (LA(1) == Token.NAME)
+            match(Token.NAME);
+        else if (LA(1) == Token.LBRACK)
+            list();
+        else
+            throw new Error("expecting name or list; found " + LT(1));
+    }
 
-	@Override
-	public void clearMemo() {
-		list_memo.clear();
-	}
+    @Override
+    public void clearMemo() {
+        list_memo.clear();
+    }
 }

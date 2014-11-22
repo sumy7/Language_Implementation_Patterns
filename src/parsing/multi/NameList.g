@@ -1,6 +1,6 @@
-list : '[' elements ']' ;  // Æ¥Åä·½À¨ºÅÄÚµÄÁĞ±í
-elements : element (',' element)* ;  // Æ¥ÅäÖĞ¼äÓĞ¶ººÅµÄÁĞ±í
-element : NAME '=' NAME // Æ¥Åäa=bÕâÑùµÄ¸³ÖµÓï¾ä 
+list : '[' elements ']' ;  // åŒ¹é…æ–¹æ‹¬å·å†…çš„åˆ—è¡¨
+elements : element (',' element)* ;  // åŒ¹é…ä¸­é—´æœ‰é€—å·çš„åˆ—è¡¨
+element : NAME '=' NAME // åŒ¹é…a=bè¿™æ ·çš„èµ‹å€¼è¯­å¥ 
         | NAME
         | list 
         ; 

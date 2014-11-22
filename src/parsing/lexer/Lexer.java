@@ -1,38 +1,38 @@
 package parsing.lexer;
 
 public abstract class Lexer {
-	public static final int INVALID_TOKEN_TYPE = 0;
-	public static final char EOF = (char) -1;// EOF×Ö·û£¬¼´ÎÄ¼ş½áÎ²
+    public static final int INVALID_TOKEN_TYPE = 0;
+    public static final char EOF = (char) -1;// EOFå­—ç¬¦ï¼Œå³æ–‡ä»¶ç»“å°¾
 
-	String input; // ÊäÈë×Ö·û´®
-	int p = 0;// µ±Ç°ÊäÈë×Ö·ûµÄÏÂ±ê
-	char c; // µ±Ç°×Ö·û
+    String input; // è¾“å…¥å­—ç¬¦ä¸²
+    int p = 0;// å½“å‰è¾“å…¥å­—ç¬¦çš„ä¸‹æ ‡
+    char c; // å½“å‰å­—ç¬¦
 
-	public Lexer(String input) {
-		this.input = input;
-		c = input.charAt(p); // Ô¤±¸ÏòÇ°¿´×Ö·û
-	}
+    public Lexer(String input) {
+        this.input = input;
+        c = input.charAt(p); // é¢„å¤‡å‘å‰çœ‹å­—ç¬¦
+    }
 
-	/**
-	 * ÏòÇ°ÒÆ¶¯Ò»¸ö×Ö·û£»¼ì²âÊäÈëÊÇ·ñ½áÊø
-	 */
-	public void consume() {
-		p++;
-		if (p >= input.length())
-			c = EOF;
-		else
-			c = input.charAt(p);
-	}
+    /**
+     * å‘å‰ç§»åŠ¨ä¸€ä¸ªå­—ç¬¦ï¼›æ£€æµ‹è¾“å…¥æ˜¯å¦ç»“æŸ
+     */
+    public void consume() {
+        p++;
+        if (p >= input.length())
+            c = EOF;
+        else
+            c = input.charAt(p);
+    }
 
-	/**
-	 * È·±£xÊÇÊäÈëÁ÷ÖĞµÄÏÂÒ»¸ö×Ö·û
-	 */
-	public void match(char x) {
-		if (c == x)
-			consume();
-		else
-			throw new Error("expecting " + x + "; found " + c);
-	}
+    /**
+     * ç¡®ä¿xæ˜¯è¾“å…¥æµä¸­çš„ä¸‹ä¸€ä¸ªå­—ç¬¦
+     */
+    public void match(char x) {
+        if (c == x)
+            consume();
+        else
+            throw new Error("expecting " + x + "; found " + c);
+    }
 
-	public abstract Token nextToken();
+    public abstract Token nextToken();
 }

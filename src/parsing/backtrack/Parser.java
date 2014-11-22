@@ -8,92 +8,92 @@ import parsing.lexer.Lexer;
 import parsing.lexer.Token;
 
 public class Parser {
-	Lexer input; // ´Ê·¨µ¥ÔªµÄÀ´Ô´
-	List<Integer> markers;// Õ»£¬´æ·ÅÓÃÓÚ¼ÇÂ¼Î»ÖÃµÄÎ»±ê£¨±ê¼Ç£©
-	List<Token> lookahead;// ´óĞ¡¿É±äµÄ»º³åÇø
-	int p = 0;// µ±Ç°ÏòÇ°¿´´Ê·¨µ¥ÔªµÄÏÂ±ê
+    Lexer input; // è¯æ³•å•å…ƒçš„æ¥æº
+    List<Integer> markers;// æ ˆï¼Œå­˜æ”¾ç”¨äºè®°å½•ä½ç½®çš„ä½æ ‡ï¼ˆæ ‡è®°ï¼‰
+    List<Token> lookahead;// å¤§å°å¯å˜çš„ç¼“å†²åŒº
+    int p = 0;// å½“å‰å‘å‰çœ‹è¯æ³•å•å…ƒçš„ä¸‹æ ‡
 
-	public Parser(Lexer input) {
-		this.input = input;
-		markers = new ArrayList<Integer>();
-		lookahead = new ArrayList<Token>();
-	}
+    public Parser(Lexer input) {
+        this.input = input;
+        markers = new ArrayList<Integer>();
+        lookahead = new ArrayList<Token>();
+    }
 
-	public Token LT(int i) {
-		sync(i);
-		return lookahead.get(p + i - 1);
-	}
+    public Token LT(int i) {
+        sync(i);
+        return lookahead.get(p + i - 1);
+    }
 
-	public int LA(int i) {
-		return LT(i).type;
-	}
+    public int LA(int i) {
+        return LT(i).type;
+    }
 
-	public void match(int x) throws MismatchedTokenException {
-		if (LA(1) == x)
-			consume();
-		else
-			throw new MismatchedTokenException("expecting "
-					+ Token.getTokenName(x) + " found " + LT(1));
-	}
+    public void match(int x) throws MismatchedTokenException {
+        if (LA(1) == x)
+            consume();
+        else
+            throw new MismatchedTokenException("expecting "
+                    + Token.getTokenName(x) + " found " + LT(1));
+    }
 
-	/**
-	 * È·±£µ±Ç°Î»ÖÃpÖ®ºóÓĞi¸ö´Ê·¨µ¥Ôª
-	 * 
-	 * @param i
-	 *            ´Ê·¨µ¥ÔªµÄ¸öÊı
-	 */
-	public void sync(int i) {
-		if (p + i - 1 > (lookahead.size() - 1)) // ´Ê·¨µ¥ÔªÊÇ·ñÔ½½ç
-		{
-			int n = (p + i - 1) - (lookahead.size() - 1); // ĞèÒªµÄ´Ê·¨µ¥ÔªµÄ¸öÊı
-			fill(n);
-		}
-	}
+    /**
+     * ç¡®ä¿å½“å‰ä½ç½®pä¹‹åæœ‰iä¸ªè¯æ³•å•å…ƒ
+     * 
+     * @param i
+     *            è¯æ³•å•å…ƒçš„ä¸ªæ•°
+     */
+    public void sync(int i) {
+        if (p + i - 1 > (lookahead.size() - 1)) // è¯æ³•å•å…ƒæ˜¯å¦è¶Šç•Œ
+        {
+            int n = (p + i - 1) - (lookahead.size() - 1); // éœ€è¦çš„è¯æ³•å•å…ƒçš„ä¸ªæ•°
+            fill(n);
+        }
+    }
 
-	/**
-	 * ¼ÓÈën¸ö´Ê·¨µ¥Ôª
-	 * 
-	 * @param n
-	 *            Ğè¼ÓÈëµÄ´Ê·¨µ¥ÔªµÄ¸öÊı
-	 */
-	public void fill(int n) {
-		for (int i = 1; i <= n; i++) {
-			lookahead.add(input.nextToken());
-		}
-	}
+    /**
+     * åŠ å…¥nä¸ªè¯æ³•å•å…ƒ
+     * 
+     * @param n
+     *            éœ€åŠ å…¥çš„è¯æ³•å•å…ƒçš„ä¸ªæ•°
+     */
+    public void fill(int n) {
+        for (int i = 1; i <= n; i++) {
+            lookahead.add(input.nextToken());
+        }
+    }
 
-	public void consume() {
-		p++;
-		// ·ÇÍÆ¶Ï×´Ì¬£¬¶øÇÒµ½´ïÏòÇ°¿´»º³åÇøµÄÄ©Î²
-		if (p == lookahead.size() && !isSpeculating()) {
-			// µ½ÁËÄ©Î²£¬Ó¦¸ÃÖØĞÂ´Ó0¿ªÊ¼ÌîÈëĞÂµÄ´Ê·¨µ¥Ôª
-			p = 0;
-			lookahead.clear();
-		}
-		sync(1);// È¡Ò»¸öĞÂµÄ´Ê·¨µ¥Ôª
-	}
+    public void consume() {
+        p++;
+        // éæ¨æ–­çŠ¶æ€ï¼Œè€Œä¸”åˆ°è¾¾å‘å‰çœ‹ç¼“å†²åŒºçš„æœ«å°¾
+        if (p == lookahead.size() && !isSpeculating()) {
+            // åˆ°äº†æœ«å°¾ï¼Œåº”è¯¥é‡æ–°ä»0å¼€å§‹å¡«å…¥æ–°çš„è¯æ³•å•å…ƒ
+            p = 0;
+            lookahead.clear();
+        }
+        sync(1);// å–ä¸€ä¸ªæ–°çš„è¯æ³•å•å…ƒ
+    }
 
-	public int mark() {
-		markers.add(p);
-		return p;
-	}
+    public int mark() {
+        markers.add(p);
+        return p;
+    }
 
-	public void release() {
-		int marker = markers.get(markers.size() - 1);
-		markers.remove(markers.size() - 1);
-		seek(marker);
-	}
+    public void release() {
+        int marker = markers.get(markers.size() - 1);
+        markers.remove(markers.size() - 1);
+        seek(marker);
+    }
 
-	public void seek(int index) {
-		p = index;
-	}
+    public void seek(int index) {
+        p = index;
+    }
 
-	/**
-	 * µ±Ç°ÊÇ·ñÔÚÍÆ¶Ï×´Ì¬
-	 * 
-	 * @return ÊÇ·ñÊÇÍÆ¶Ï×´Ì¬
-	 */
-	public boolean isSpeculating() {
-		return markers.size() > 0;
-	}
+    /**
+     * å½“å‰æ˜¯å¦åœ¨æ¨æ–­çŠ¶æ€
+     * 
+     * @return æ˜¯å¦æ˜¯æ¨æ–­çŠ¶æ€
+     */
+    public boolean isSpeculating() {
+        return markers.size() > 0;
+    }
 }

@@ -1,3 +1,3 @@
-list : '[' elements ']' ;  // ф╔еД╥╫ю╗╨едз╣дап╠М
-elements : element (',' element)* ;  // ф╔еДжп╪Дсп╤╨╨е╣дап╠М
-element : NAME | list ;  // р╩╦Жelementр╙ц╢йгNAMEё╛р╙ц╢йгг╤лв╣дап╠М
+list : '[' elements ']' ;  // Е▄╧И┘█Ф√╧Ф▀╛Е▐╥Е├┘Г └Е┬≈Х║╗
+elements : element (',' element)* ;  // Е▄╧И┘█Д╦╜И≈╢Ф°┴И─≈Е▐╥Г └Е┬≈Х║╗
+element : NAME | list ;  // Д╦─Д╦╙elementХ╕│Д╧┬Ф≤╞NAMEО╪▄Х╕│Д╧┬Ф≤╞Е╣▄Е╔≈Г └Е┬≈Х║╗

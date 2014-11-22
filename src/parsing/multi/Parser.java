@@ -4,38 +4,38 @@ import parsing.lexer.Lexer;
 import parsing.lexer.Token;
 
 public class Parser {
-	Lexer input; // ÊäÈëµÄ´Ê·¨µ¥Ôª
-	Token[] lookahead; // »·ĞÎ»º³åÇø
-	int k; // ÏòÇ°¿´·ûºÅµÄ¸öÊı
-	int p = 0; // »·ĞÎ»º³åÇøÖĞ×°ÌîÏÂÒ»¸ö´Ê·¨µ¥ÔªµÄÎ»ÖÃ
+    Lexer input; // è¾“å…¥çš„è¯æ³•å•å…ƒ
+    Token[] lookahead; // ç¯å½¢ç¼“å†²åŒº
+    int k; // å‘å‰çœ‹ç¬¦å·çš„ä¸ªæ•°
+    int p = 0; // ç¯å½¢ç¼“å†²åŒºä¸­è£…å¡«ä¸‹ä¸€ä¸ªè¯æ³•å•å…ƒçš„ä½ç½®
 
-	public Parser(Lexer input, int k) {
-		this.input = input;
-		this.k = k;
-		lookahead = new Token[k]; // ¿ª±ÙÏòÇ°¿´»º³åÇø
-		for (int i = 1; i <= k; i++) {
-			consume(); // ÓÃk¸öÏòÇ°¿´·ûºÅ³õÊ¼»¯»º³åÇø
-		}
-	}
+    public Parser(Lexer input, int k) {
+        this.input = input;
+        this.k = k;
+        lookahead = new Token[k]; // å¼€è¾Ÿå‘å‰çœ‹ç¼“å†²åŒº
+        for (int i = 1; i <= k; i++) {
+            consume(); // ç”¨kä¸ªå‘å‰çœ‹ç¬¦å·åˆå§‹åŒ–ç¼“å†²åŒº
+        }
+    }
 
-	public Token LT(int i) {
-		return lookahead[(p + i - 1) % k]; //»·Ê½È¡Öµ
-	}
+    public Token LT(int i) {
+        return lookahead[(p + i - 1) % k];// ç¯å¼å–å€¼
+    }
 
-	public int LA(int i) {
-		return LT(i).type;
-	}
+    public int LA(int i) {
+        return LT(i).type;
+    }
 
-	public void match(int x) {
-		if (LA(1) == x)
-			consume();
-		else
-			throw new Error("expecting " + Token.getTokenName(x) + "; found "
-					+ LT(1));
-	}
+    public void match(int x) {
+        if (LA(1) == x)
+            consume();
+        else
+            throw new Error("expecting " + Token.getTokenName(x) + "; found "
+                    + LT(1));
+    }
 
-	public void consume() {
-		lookahead[p] = input.nextToken(); // ÔÚÏÂÒ»¸öÎ»ÖÃÉÏ·ÅÈë´Ê·¨µ¥Ôª
-		p = (p + 1) % k; // ×ÔÔöÏÂ±ê
-	}
+    public void consume() {
+        lookahead[p] = input.nextToken(); // åœ¨ä¸‹ä¸€ä¸ªä½ç½®ä¸Šæ”¾å…¥è¯æ³•å•å…ƒ
+        p = (p + 1) % k; // è‡ªå¢ä¸‹æ ‡
+    }
 }

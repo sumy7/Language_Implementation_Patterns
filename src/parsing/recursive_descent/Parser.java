@@ -4,29 +4,29 @@ import parsing.lexer.Lexer;
 import parsing.lexer.Token;
 
 public class Parser {
-	Lexer input; // ÊäÈëµÄ´Ê·¨µ¥Ôª
-	Token lookahead; // µ±Ç°µÄÏòÇ°¿´·ûºÅ
+    Lexer input; // è¾“å…¥çš„è¯æ³•å•å…ƒ
+    Token lookahead; // å½“å‰çš„å‘å‰çœ‹ç¬¦å·
 
-	public Parser(Lexer input) {
-		this.input = input;
-		lookahead = input.nextToken();
-	}
+    public Parser(Lexer input) {
+        this.input = input;
+        lookahead = input.nextToken();
+    }
 
-	/**
-	 * Èç¹ûÏòÇ°¿´´Ê·¨ÀàĞÍÄÜÆ¥Åäx£¬ÄÇÃ´¾ÍºöÂÔ²¢·µ»Ø£»·ñÔò±¨´í
-	 * 
-	 * @param x
-	 *            ĞèÒªÆ¥ÅäµÄ´Ê·¨ÀàĞÍ
-	 */
-	public void match(int x) {
-		if (lookahead.type == x)
-			consume();
-		else
-			throw new Error("expecting " + Token.getTokenName(x) + "; found "
-					+ lookahead);
-	}
+    /**
+     * å¦‚æœå‘å‰çœ‹è¯æ³•ç±»å‹èƒ½åŒ¹é…xï¼Œé‚£ä¹ˆå°±å¿½ç•¥å¹¶è¿”å›ï¼›å¦åˆ™æŠ¥é”™
+     * 
+     * @param x
+     *            éœ€è¦åŒ¹é…çš„è¯æ³•ç±»å‹
+     */
+    public void match(int x) {
+        if (lookahead.type == x)
+            consume();
+        else
+            throw new Error("expecting " + Token.getTokenName(x) + "; found "
+                    + lookahead);
+    }
 
-	public void consume() {
-		lookahead = input.nextToken();
-	}
+    public void consume() {
+        lookahead = input.nextToken();
+    }
 }
